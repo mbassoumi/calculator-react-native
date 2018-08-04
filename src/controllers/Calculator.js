@@ -1,5 +1,9 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
+import NumberButton from "../components/NumberButton";
+import colors from "../config/colors"
+import Lcd from "../components/Lcd";
+
 
 export default class Calculator extends Component {
 
@@ -21,11 +25,121 @@ export default class Calculator extends Component {
      *      - componentDidUpdate(object prevProps, object prevState)
      */
 
+
+    buttonsArray = [
+        [
+            {
+                title: "1",
+                accessibilityLabel: "add 1",
+                color: colors.numberButton,
+                value: "1"
+            },
+            {
+                title: "2",
+                accessibilityLabel: "add 2",
+                color: colors.numberButton,
+                value: "2"
+            },
+            {
+                title: "3",
+                accessibilityLabel: "add 3",
+                color: colors.numberButton,
+                value: "3"
+            },
+            {
+                title: "+",
+                accessibilityLabel: "plus",
+                color: colors.operatorButton,
+                value: "+"
+            },
+        ],
+        [
+            {
+                title: "4",
+                accessibilityLabel: "add 4",
+                color: colors.numberButton,
+                value: "4"
+            },
+            {
+                title: "5",
+                accessibilityLabel: "add 5",
+                color: colors.numberButton,
+                value: "5"
+            },
+            {
+                title: "6",
+                accessibilityLabel: "add 6",
+                color: colors.numberButton,
+                value: "6"
+            },
+            {
+                title: "-",
+                accessibilityLabel: "minus",
+                color: colors.operatorButton,
+                value: "-"
+            },
+        ],
+        [
+            {
+                title: "7",
+                accessibilityLabel: "add 7",
+                color: colors.numberButton,
+                value: "7"
+            },
+            {
+                title: "8",
+                accessibilityLabel: "add 8",
+                color: colors.numberButton,
+                value: "8"
+            },
+            {
+                title: "9",
+                accessibilityLabel: "add 9",
+                color: colors.numberButton,
+                value: "9"
+            },
+            {
+                title: "*",
+                accessibilityLabel: "multiply",
+                color: colors.operatorButton,
+                value: "*"
+            },
+        ],
+        [
+            {
+                title: "<-",
+                accessibilityLabel: "delete",
+                color: colors.operatorButton,
+                value: "del"
+            },
+            {
+                title: "0",
+                accessibilityLabel: "add 0",
+                color: colors.numberButton,
+                value: "0"
+            },
+            {
+                title: "/",
+                accessibilityLabel: "divide",
+                color: colors.operatorButton,
+                value: "/"
+            },
+            {
+                title: "=",
+                accessibilityLabel: "equal",
+                color: colors.operatorButton,
+                value: "="
+            },
+        ],
+
+
+    ];
+
     /**
      *
      * @param props
      */
-    constructor(props){
+    constructor(props) {
         /**
          * The component class is instantiated.
          * The parameters to the constructor are the element's initial props, as specified by the parent element.
@@ -37,7 +151,7 @@ export default class Calculator extends Component {
 
     }
 
-    componentWillMount(){
+    componentWillMount() {
         /**
          * This method is invoked only once,
          * before rendering occurs for the first time.
@@ -46,7 +160,7 @@ export default class Calculator extends Component {
         console.log('componentWillMount');
     }
 
-    componentDidMount(){
+    componentDidMount() {
         /**
          * This method is invoked only once, after rendering occurs for the first time.
          * At this point, the native UI for this element has finished rendering, and may be accessed through this.refs for direct manipulation.
@@ -59,7 +173,7 @@ export default class Calculator extends Component {
      *
      * @param nextProps
      */
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         /**
          * The parent of this component has passed a new set of props.
          * This component will re-render.
@@ -74,7 +188,7 @@ export default class Calculator extends Component {
      * @param nextState
      * @returns {boolean}
      */
-    shouldComponentUpdate(nextProps, nextState){
+    shouldComponentUpdate(nextProps, nextState) {
         /**
          * Based on the next values of props and state, a component may decide to re-render or not to re-render.
          * The base class's implementation of this method always returns true (the component should re-render).
@@ -91,7 +205,7 @@ export default class Calculator extends Component {
      * @param nextProps
      * @param nextState
      */
-    componentWillUpdate(nextProps, nextState){
+    componentWillUpdate(nextProps, nextState) {
         /**
          * This method is invoked, after the decision has been made to re-render.
          * You may not call this.setState() here, since an update is already in progress.
@@ -99,14 +213,13 @@ export default class Calculator extends Component {
         console.log('componentWillUpdate');
     }
 
-    componentDidUpdate(prevProps, prevState){
+    componentDidUpdate(prevProps, prevState) {
         /**
          * This method is invoked after re-rendering occurs.
          * At this point, the native UI for this component has been updated to reflect the React Element returned from the render() method.
          */
         console.log('componentDidUpdate');
     }
-
 
 
     render() {
@@ -120,20 +233,101 @@ export default class Calculator extends Component {
          */
         console.log('render');
 
+        this.mapArrayToButtons();
+
         return (
-            <View >
-                <Text>
-                    a7ad
-                </Text>
+
+            <View style={styles.parentView}>
+
+
+                <View style={styles.lcd}>
+                    <Lcd>
+                        a7a
+                    </Lcd>
+                </View>
+
+                <View style={styles.numbers}>
+
+                    {
+                        this.buttonsArray.map((prop, key) => {
+                            return (
+                                <View style={styles.rowData} key={key}>
+                                    {
+                                        prop.map((prop, key) => {
+                                            return (
+                                                <NumberButton
+                                                    key={key}
+                                                    onPress={this.setNumber}
+                                                    title={prop['title']}
+                                                    accessibilityLabel={prop['accessibilityLabel']}
+                                                    color={prop['color']}
+                                                    value={prop['value']}
+                                                />
+                                            )
+                                        })
+                                    }
+                                </View>
+                            )
+                        })
+                    }
+                </View>
             </View>
         )
     }
+
+
+    setNumber = (number) => {
+        console.log(number);
+    };
+
+    mapArrayToButtons = () => {
+        this.buttonsArray.map((prop, key) => {
+            return (
+                <View style={styles.rowData}>
+                    {
+                        prop.map((prop, key) => {
+                            return (
+                                <NumberButton
+                                    key={key}
+                                    onPress={this.setNumber}
+                                    title={prop['title']}
+                                    accessibilityLabel={prop['accessibilityLabel']}
+                                    color={prop['color']}
+                                    value={prop['value']}
+                                />
+                            )
+                        })
+                    }
+                </View>
+            )
+        })
+    };
 
 }
 
 
 const styles = StyleSheet.create({
     parentView: {
+        flex: 1,
+        justifyContent: 'center',
+        // alignItems: 'center',
+        backgroundColor: colors.background,
+        // backgroundColor: colors.background,
+    },
+    rowData: {
+        flex: 1,
+        justifyContent: 'center',
+        flexDirection: 'row',
+        paddingHorizontal: 10,
+        marginBottom: 10
+    },
+    lcd: {
+        flex: 1,
+        // backgroundColor: colors.lcdBackground,
+        padding: 10,
+    },
+    numbers:{
+        flex:2,
+    },
 
-    }
 });
