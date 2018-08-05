@@ -70,7 +70,9 @@ export default class Lcd extends Component {
          * This component will re-render.
          * You may optionally call this.setState() to update this component's internal state before the render method is called.
          */
-        console.log(nextProps);
+        // console.log('componentWillReceiveProps');
+        // console.log(nextProps);
+        this.children = nextProps.children;
     }
 
     /**
@@ -87,6 +89,9 @@ export default class Lcd extends Component {
          * e.g. run an equality test of each key/value in these objects.
          * Returning false will prevent the render method from being called.
          */
+        // console.log('shouldComponentUpdate');
+        // console.log(nextProps);
+        // console.log(nextState);
         return true;
     }
 
@@ -100,6 +105,9 @@ export default class Lcd extends Component {
          * This method is invoked, after the decision has been made to re-render.
          * You may not call this.setState() here, since an update is already in progress.
          */
+        // console.log('componentWillUpdate');
+        // console.log(nextProps);
+        // console.log(nextState);
     }
 
     /**
@@ -112,6 +120,9 @@ export default class Lcd extends Component {
          * This method is invoked after re-rendering occurs.
          * At this point, the native UI for this component has been updated to reflect the React Element returned from the render() method.
          */
+        // console.log('componentDidUpdate');
+        // console.log(prevProps);
+        // console.log(prevState);
     }
 
 

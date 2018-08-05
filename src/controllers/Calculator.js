@@ -135,6 +135,10 @@ export default class Calculator extends Component {
 
     ];
 
+    state = {
+        lcd_text: '',
+    };
+
     /**
      *
      * @param props
@@ -146,8 +150,9 @@ export default class Calculator extends Component {
          * You can optionally specify an initial state for the element by assigning an object to this.state.
          * At this point, no native UI has been rendered yet for this element.
          */
+        // console.log('---------------------------------------------------------');
         super(props);
-        console.log('constructor');
+        // console.log('constructor calculator');
 
     }
 
@@ -157,7 +162,8 @@ export default class Calculator extends Component {
          * before rendering occurs for the first time.
          * At this point, there is still no native UI rendered for this element.
          */
-        console.log('componentWillMount');
+        // console.log('---------------------------------------------------------');
+        // console.log('componentWillMount calculator');
     }
 
     componentDidMount() {
@@ -166,7 +172,7 @@ export default class Calculator extends Component {
          * At this point, the native UI for this element has finished rendering, and may be accessed through this.refs for direct manipulation.
          * If you need to make async API calls or execute delayed code with setTimeout, that should generally be done in this method.
          */
-        console.log('componentDidMount');
+        // console.log('componentDidMount calculator');
     }
 
     /**
@@ -179,7 +185,9 @@ export default class Calculator extends Component {
          * This component will re-render.
          * You may optionally call this.setState() to update this component's internal state before the render method is called.
          */
-        console.log('componentWillReceiveProps');
+        // console.log('---------------------------------------------------------');
+        // console.log('componentWillReceiveProps calculator');
+        // console.log(nextProps);
     }
 
     /**
@@ -196,7 +204,10 @@ export default class Calculator extends Component {
          * e.g. run an equality test of each key/value in these objects.
          * Returning false will prevent the render method from being called.
          */
-        console.log('shouldComponentUpdate');
+        // console.log('---------------------------------------------------------');
+        // console.log('shouldComponentUpdate calculator');
+        // console.log(nextProps);
+        // console.log(nextState);
         return true;
     }
 
@@ -210,7 +221,10 @@ export default class Calculator extends Component {
          * This method is invoked, after the decision has been made to re-render.
          * You may not call this.setState() here, since an update is already in progress.
          */
-        console.log('componentWillUpdate');
+        // console.log('---------------------------------------------------------');
+        // console.log('componentWillUpdate calculator');
+        // console.log(nextProps);
+        // console.log(nextState);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -218,7 +232,10 @@ export default class Calculator extends Component {
          * This method is invoked after re-rendering occurs.
          * At this point, the native UI for this component has been updated to reflect the React Element returned from the render() method.
          */
-        console.log('componentDidUpdate');
+        // console.log('---------------------------------------------------------');
+        // console.log('componentDidUpdate calculator');
+        // console.log(prevProps);
+        // console.log(prevState);
     }
 
 
@@ -231,7 +248,7 @@ export default class Calculator extends Component {
          *      - This method is called, assuming shouldComponentUpdate returned true.
          *        The render method must return a React Element to render (or null, to render nothing).
          */
-        console.log('render');
+        // console.log('render');
 
         this.mapArrayToButtons();
 
@@ -242,7 +259,7 @@ export default class Calculator extends Component {
 
                 <View style={styles.lcd}>
                     <Lcd>
-                        a7a
+                        {this.state.lcd_text}
                     </Lcd>
                 </View>
 
@@ -277,7 +294,86 @@ export default class Calculator extends Component {
 
 
     setNumber = (number) => {
-        console.log(number);
+        if (number == "del") {
+            this.setState({
+                lcd_text: this.state.lcd_text.substring(0, this.state.lcd_text.length - 1),
+            });
+        } else if (this.checkIfNumberIsOperator(number)) {
+            const temp_str = this.state.lcd_text;
+            const last_element = temp_str.substring(temp_str.length - 1, temp_str.length);
+            if (number == "-"){
+                if (last_element == "-"){
+                    this.setState({
+                        lcd_text: this.state.lcd_text.substring(0, this.state.lcd_text.length - 1),
+                    });
+                } else {
+                    this.setState({
+                        lcd_text: this.state.lcd_text + number,
+                    });
+                }
+            } else {
+                // while (true) {
+                //     if (this.checkIfLastElementIsOperator()) {
+                //         this.setState({
+                //             lcd_text: this.state.lcd_text.substring(0, this.state.lcd_text.length - 1) + number,
+                //         });
+                //     }else {
+                //         break;
+                //     }
+                // }
+                if (this.checkIfLastElementIsOperator()) {
+                    this.setState({
+                        lcd_text: this.state.lcd_text.substring(0, this.state.lcd_text.length - 1) + number,
+                    });
+                } else if(this.state.lcd_text == "" || last_element == ""){
+                    //do nothing
+                }else {
+                    this.setState({
+                        lcd_text: this.state.lcd_text + number
+                    });
+                }
+            }
+
+        } else if (number == "=") {
+            if (this.checkIfLastElementIsOperator()) {
+                this.setState({
+                    lcd_text: this.state.lcd_text.substring(0, this.state.lcd_text.length - 1),
+                });
+            }
+        } else {
+            this.setState({
+                lcd_text: this.state.lcd_text + number
+            });
+        }
+
+        // console.log(number);
+        // console.log(this.state.lcd_text);
+    };
+
+    checkIfNumberIsOperator = (number) => {
+        if (number == "+"
+            || number == "-"
+            || number == "*"
+            || number == "/"
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
+    checkIfLastElementIsOperator = () => {
+        const temp_str = this.state.lcd_text;
+        const last_element = temp_str.substring(temp_str.length - 1, temp_str.length);
+        if (last_element == "+"
+            || last_element == "-"
+            || last_element == "*"
+            || last_element == "/"
+    ) {
+            return true;
+        } else {
+            return false;
+        }
     };
 
     mapArrayToButtons = () => {
@@ -326,8 +422,8 @@ const styles = StyleSheet.create({
         // backgroundColor: colors.lcdBackground,
         padding: 10,
     },
-    numbers:{
-        flex:2,
+    numbers: {
+        flex: 2,
     },
 
 });
