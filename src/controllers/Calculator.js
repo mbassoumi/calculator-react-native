@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, Alert} from 'react-native';
 import NumberButton from "../components/NumberButton";
 import colors from "../config/colors"
 import Lcd from "../components/Lcd";
@@ -137,6 +137,7 @@ export default class Calculator extends Component {
 
     state = {
         lcd_text: '',
+        isEqual: false,
     };
 
     /**
@@ -259,7 +260,7 @@ export default class Calculator extends Component {
 
                 <View style={styles.lcd}>
                     <Lcd>
-                        {this.state.lcd_text}
+                        {this.state}
                     </Lcd>
                 </View>
 
@@ -293,22 +294,46 @@ export default class Calculator extends Component {
     }
 
 
+    reset = (nextInput) => {
+        let lcd_text = this.state.lcd_text;
+        if (this.state.isEqual === true){
+            console.log('mozeh');
+            if (nextInput !== "+"
+                && nextInput !== "-"
+                && nextInput !== "*"
+                && nextInput !== "/"
+                && nextInput !== "="
+            ) {
+                lcd_text = '';
+                this.setState({
+                    lcd_text: lcd_text,
+                    isEqual:false,
+                });
+            }else {
+                this.setState({
+                    isEqual:false,
+                });
+            }
+        }
+        return lcd_text;
+    };
+
     setNumber = (number) => {
+        let lcd_text = this.reset(number);
         if (number == "del") {
             this.setState({
-                lcd_text: this.state.lcd_text.substring(0, this.state.lcd_text.length - 1),
+                lcd_text: lcd_text.substring(0, lcd_text.length - 1),
             });
         } else if (this.checkIfNumberIsOperator(number)) {
-            const temp_str = this.state.lcd_text;
-            const last_element = temp_str.substring(temp_str.length - 1, temp_str.length);
+            let last_element = lcd_text.substring(lcd_text.length - 1, lcd_text.length);
             if (number == "-"){
                 if (last_element == "-"){
                     this.setState({
-                        lcd_text: this.state.lcd_text.substring(0, this.state.lcd_text.length - 1),
+                        lcd_text: lcd_text.substring(0, lcd_text.length - 1),
                     });
                 } else {
                     this.setState({
-                        lcd_text: this.state.lcd_text + number,
+                        lcd_text: lcd_text + number,
                     });
                 }
             } else {
@@ -323,26 +348,29 @@ export default class Calculator extends Component {
                 // }
                 if (this.checkIfLastElementIsOperator()) {
                     this.setState({
-                        lcd_text: this.state.lcd_text.substring(0, this.state.lcd_text.length - 1) + number,
+                        lcd_text: lcd_text.substring(0, lcd_text.length - 1) + number,
                     });
-                } else if(this.state.lcd_text == "" || last_element == ""){
+                } else if(lcd_text == "" || last_element == ""){
                     //do nothing
                 }else {
                     this.setState({
-                        lcd_text: this.state.lcd_text + number
+                        lcd_text: lcd_text + number
                     });
                 }
             }
 
         } else if (number == "=") {
+            let new_lcd_text = this.state.lcd_text;
             if (this.checkIfLastElementIsOperator()) {
+                new_lcd_text = lcd_text.substring(0, lcd_text.length - 1);
                 this.setState({
-                    lcd_text: this.state.lcd_text.substring(0, this.state.lcd_text.length - 1),
+                    lcd_text: new_lcd_text
                 });
             }
+            this.calculate(new_lcd_text);
         } else {
             this.setState({
-                lcd_text: this.state.lcd_text + number
+                lcd_text: lcd_text + number
             });
         }
 
@@ -363,8 +391,8 @@ export default class Calculator extends Component {
     };
 
     checkIfLastElementIsOperator = () => {
-        const temp_str = this.state.lcd_text;
-        const last_element = temp_str.substring(temp_str.length - 1, temp_str.length);
+        let temp_str = this.state.lcd_text;
+        let last_element = temp_str.substring(temp_str.length - 1, temp_str.length);
         if (last_element == "+"
             || last_element == "-"
             || last_element == "*"
@@ -375,6 +403,27 @@ export default class Calculator extends Component {
             return false;
         }
     };
+
+    calculate = (equation) => {
+        try {
+            let result = eval(equation);
+            this.setState({
+                lcd_text: ""+result,
+                isEqual: true
+            });
+        }catch (e) {
+            Alert.alert(
+                'Error',
+                'You have entered wrong input',
+                [
+                    {text: 'Reset Input', onPress: () => {this.setState({lcd_text: ''})}},
+                    {text: 'Cancel', style:'cancel'},
+                ],
+            );
+        }
+
+    };
+
 
     mapArrayToButtons = () => {
         this.buttonsArray.map((prop, key) => {

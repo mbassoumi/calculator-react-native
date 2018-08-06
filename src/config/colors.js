@@ -4,6 +4,7 @@ const colors = {
     background: "#00838f",
     lcdBackground: "white",
     lcdTextColor: "black",
+    answer: "#00838f",
 };
 
 export default colors;

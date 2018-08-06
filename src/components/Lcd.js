@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Text} from 'react-native';
+import {StyleSheet, View, Text, Dimensions} from 'react-native';
 import colors from "../config/colors";
+
+let width = Dimensions.get('window').width;
 
 export default class Lcd extends Component {
 
@@ -40,7 +42,6 @@ export default class Lcd extends Component {
 
         super(props);
         this.children = this.props.children;
-
 
     }
 
@@ -143,8 +144,8 @@ export default class Lcd extends Component {
                         Calculator LCD ...
                     </Text>
                 </View>
-                <Text style={styles.title}>
-                    {this.children}
+                <Text style={(this.children.isEqual) ? styles.equal : styles.title}  >
+                    {this.children.lcd_text}
                 </Text>
             </View>
         )
@@ -164,9 +165,17 @@ const styles = StyleSheet.create({
         padding: 15,
         color: colors.lcdTextColor,
     },
+    equal:{
+        flex:1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        color: colors.answer,
+        fontWeight: 'bold',
+        fontSize: 0.1*width,
+    },
 
     description: {
-        // textAlign: 'center',
         padding: 10,
         paddingBottom: 0,
         // underlineColorAndroid: "black",
